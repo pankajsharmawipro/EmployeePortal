@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>
+            RBS Puzzle
+        </title>
+        <!-- Load AngularJS -->
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+        <script type="text/javascript">
+            var app = angular.module("UserManagement", []);
+            //var itemsSorted  = $filter('orderBy')(app, 'salary');
+            //Controller Part
+             app.controller("UserManagementController", function($scope, $http) {
+         
+                //Initialize page with default data which is blank in this example
+                $scope.employees = [];
+                $scope.form = {
+                    id : -1,
+                    name : "",
+                    salary : "",
+                    hire_date : ""
+                };
+         
+                //Now load the data from server
+                _refreshPageData();
+				
+                /* Private Methods */
+                //HTTP GET- get all employees collection
+                function _refreshPageData() {
+                    $http({
+                        method : 'GET',
+                        url : 'http://localhost:8080/employees'
+                    }).then(function successCallback(response) {
+                        $scope.employees = response.data;
+                    }, function errorCallback(response) {
+                        console.log(response.statusText);
+                    });
+                }
+         
+                function _success(response) {
+                    _refreshPageData();
+                    _clearForm()
+                }
+         
+                function _error(response) {
+                    console.log(response.statusText);
+                }
+         
+                //Clear the form
+                function _clearForm() {
+                    $scope.form.hire_date = "";
+                    $scope.form.salary = "";
+                    $scope.form.name = "";
+                    $scope.form.id = -1;
+                };
+            }); 
+            
+            
+        </script>
+        <style>
+            .button {
+                cursor: pointer;
+                color: blue;
+            }
+            td,th{
+                border: 1px solid gray;
+                width: 25%;
+                text-align: left;
+            }
+            table {
+                width: 600px;
+            }
+           
+          table, th , td {
+            border: 1px solid grey;
+            border-collapse: collapse;
+            padding: 5px;
+         }
+         table tr:nth-child(odd) {
+            background-color: #f2f2f2;
+         }
+         table tr:nth-child(even) {
+            background-color: #ffffff;
+         }
+      
+        </style>
+    <head>
+    <body ng-app="UserManagement" ng-controller="UserManagementController">
+   <h1>
+            RBS Employee Portal
+        </h1>
+ 
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Salary</th>
+                <th>Hire Date</th>
+            </tr>
+ 
+            <tr ng-repeat="employee in employees">
+                <td>{{ employee.id }}</td>
+                <td>{{ employee.name }}</td>
+                <td>{{ employee.salary }}</td>
+				<td>{{ employee.hire_date }}</td>
+				
+                
+            </tr>
+ 
+        </table>
+ 
+        
+ 
+    </body>
+</html>
