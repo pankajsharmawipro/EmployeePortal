@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.employee.main.model.Employee;
+import com.employee.main.service.CompareByDate;
 import com.employee.main.service.CompareByName;
+import com.employee.main.service.CompareBySalary;
 import com.employee.main.service.EmployeeService;
 
 @RestController
-//@RequestMapping("/employee")
 public class EmployeeController {
 	
 	@Autowired
@@ -29,6 +30,22 @@ public class EmployeeController {
 	public List<Employee> getSortedListByName() {
 		List list=employeeService.getAllEmployees();
 		Collections.sort(list,new CompareByName() );
+		System.out.println(list);
+        return list;
+    }
+	
+	@GetMapping("/sortedbysalary")
+	public List<Employee> getSortedListBySalary() {
+		List list=employeeService.getAllEmployees();
+		Collections.sort(list,new CompareBySalary() );
+		System.out.println(list);
+        return list;
+    }
+	
+	@GetMapping("/sortedbydate")
+	public List<Employee> getSortedListByHireDate() {
+		List list=employeeService.getAllEmployees();
+		Collections.sort(list,new CompareByDate() );
 		System.out.println(list);
         return list;
     }

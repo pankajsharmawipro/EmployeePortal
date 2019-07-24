@@ -1,134 +1,177 @@
 <!doctype html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <title>
-            RBS Puzzle
-        </title>
-        <!-- Load AngularJS -->
-        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-       <script type="text/javascript">
-            var app = angular.module("UserManagement", []);
-            //var itemsSorted  = $filter('orderBy')(app, 'salary');
-            //Controller Part
-             app.controller("UserManagementController", function($scope, $http) {
-         
-                //Initialize page with default data which is blank in this example
-                $scope.employees = [];
-                $scope.form = {
-                    id : -1,
-                    name : "",
-                    salary : "",
-                    hire_date : ""
-                };
-         
-                //Now load the data from server
-                _refreshPageData();
-				
-                /* Private Methods */
-                //HTTP GET- get all employees collection
-                function _refreshPageData() {
-                    $http({
-                        method : 'GET',
-                        url : 'http://localhost:8080/employees'
-                    }).then(function successCallback(response) {
-                        $scope.employees = response.data;
-                    }, function errorCallback(response) {
-                        console.log(response.statusText);
-                    });
-                }
-         
-                function _success(response) {
-                    _refreshPageData();
-                    _clearForm()
-                }
-         
-                function _error(response) {
-                    console.log(response.statusText);
-                }
-         
-                //Clear the form
-                function _clearForm() {
-                    $scope.form.hire_date = "";
-                    $scope.form.salary = "";
-                    $scope.form.name = "";
-                    $scope.form.id = -1;
-                };
-            }); 
-            
-            
-        </script>
-        <style>
-            .button {
-                cursor: pointer;
-                color: blue;
-            }
-            td,th{
-                border: 1px solid gray;
-                width: 25%;
-                text-align: left;
-            }
-            table {
-                width: 600px;
-            }
-           
-          table, th , td {
-            border: 1px solid grey;
-            border-collapse: collapse;
-            padding: 5px;
-         }
-         table tr:nth-child(odd) {
-            background-color: #f2f2f2;
-         }
-         table tr:nth-child(even) {
-            background-color: #ffffff;
-         }
-         table, th, td {
-          border: 2px solid black;
-         }
-      
-        </style>
-    <head>
+<head>
+<meta charset="utf-8" />
+<title>RBS Puzzle</title>
+<!-- Load AngularJS -->
+<script
+	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script type="text/javascript">
+	var app = angular.module("UserManagement", []);
+
+	//Controller Part
+	app.controller("UserManagementController", function($scope, $http) {
+
+		//Initialize page with default data which is blank in this example
+		$scope.employees = [];
+		$scope.form = {
+			id : -1,
+			name : "",
+			salary : "",
+			hire_date : ""
+		};
+
+		//Now load the data from server
+		_refreshPageData();
+
+		/* Private Methods */
+		//HTTP GET- get all employees collection
+		function _refreshPageData() {
+			$http({
+				method : 'GET',
+				url : 'http://localhost:8080/employees'
+			}).then(function successCallback(response) {
+				$scope.employees = response.data;
+			}, function errorCallback(response) {
+				console.log(response.statusText);
+			});
+		}
+
+		function _success(response) {
+			_refreshPageData();
+			_clearForm()
+		}
+
+		function _error(response) {
+			console.log(response.statusText);
+		}
+
+		$scope.onChange = function() {
+			$scope.employees = [];
+
+			if ($scope.selectedValue == "Sort By Name") {
+
+				console.log("event called 1", $scope.selectedValue);
+				$http({
+					method : 'GET',
+					url : 'http://localhost:8080/sortedbyname'
+				}).then(function successCallback(response) {
+					$scope.employees = response.data;
+
+				}, function errorCallback(response) {
+					console.log(response.statusText);
+				});
+
+			}
+			if ($scope.selectedValue == "Sort By Salary") {
+				console.log("event called 2", $scope.selectedValue);
+
+				$http({
+					method : 'GET',
+					url : 'http://localhost:8080/sortedbysalary'
+				}).then(function successCallback(response) {
+					$scope.employees = response.data;
+
+				}, function errorCallback(response) {
+					console.log(response.statusText);
+				});
+			}
+			if ($scope.selectedValue == "Sort By Hiring Date") {
+				console.log("event called 3", $scope.selectedValue);
+
+				$http({
+					method : 'GET',
+					url : 'http://localhost:8080/sortedbydate'
+				}).then(function successCallback(response) {
+					$scope.employees = response.data;
+
+				}, function errorCallback(response) {
+					console.log(response.statusText);
+				});
+			}
+		}
+
+		//Clear the form
+		function _clearForm() {
+			$scope.form.hire_date = "";
+			$scope.form.salary = "";
+			$scope.form.name = "";
+			$scope.form.id = -1;
+		}
+		;
+	});
+</script>
+<style>
+.button {
+	cursor: pointer;
+	color: blue;
+}
+
+td, th {
+	border: 1px solid gray;
+	width: 25%;
+	text-align: left;
+}
+
+table {
+	width: 600px;
+}
+
+table, th, td {
+	border: 1px solid grey;
+	border-collapse: collapse;
+	padding: 5px;
+}
+
+table tr:nth-child(odd) {
+	background-color: #f2f2f2;
+}
+
+table tr:nth-child(even) {
+	background-color: #ffffff;
+}
+
+table, th, td {
+	border: 2px solid black;
+}
+</style>
+<head>
 <body ng-app="UserManagement" ng-controller="UserManagementController">
-   <h1>
-            RBS Employee Portal
-   </h1>
-  <table border="1">
-    <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Salary</th>
-                <th>Hire Date</th>
-            </tr>
- 
-            <tr ng-repeat="employee in employees">
-                <td>{{ employee.id }}</td>
-                <td>{{ employee.name }}</td>
-                <td>{{ employee.salary }}</td>
-				<td>{{ employee.hire_date }}</td>
-				
-                
-            </tr>
-            
-        </table>
-        <table>
-        <tr>
-        
-        </tr>
-</table>
-   
-<div id="dropdown" >
-    <div class="demo-section k-content" ng-app="UserManagement"  ng-controller="UserManagementController">
-    <h4>Select Sorting Mechanism</h4>
-     <select id="sorting"  tabindex="" title="" ng-change="onChange()" ng-model="selectedValue">
-        <option value="">-Select One-</option>
-        <option value="Sort By Name">Sort By Name</option>
-        <option value="Sort By Salary">Sort By Salary</option>
-        <option value="Sort By Hiring Date">Sort By Hiring Date</option>
- </select>
-    
-</div>
-</div>
+	<h1>RBS Employee Portal</h1><h5>By Pankaj Sharma</h5>
+	
+	<table border="1">
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Salary</th>
+			<th>Hire Date (dd.MM.yyyy)</th>
+		</tr>
+
+		<tr ng-repeat="employee in employees">
+			<td>{{ employee.id }}</td>
+			<td>{{ employee.name }}</td>
+			<td>{{ employee.salary }}</td>
+			<td>{{ employee.hire_date | date : "dd.MM.yyyy" }}</td>
+
+
+		</tr>
+
+	</table>
+	
+	<div id="dropdown">
+
+		<h4>Select Sorting Mechanism</h4>
+		<select id="sorting" tabindex="" title="" ng-change="onChange()"
+			ng-model="selectedValue">
+			<option value="">-Select One-</option>
+			<option value="Sort By Name">Sort By Name</option>
+			<option value="Sort By Salary">Sort By Salary</option>
+			<option value="Sort By Hiring Date">Sort By Hiring Date</option>
+		</select>
+
+	</div>
+	
+
 
 </body>
 </html>
